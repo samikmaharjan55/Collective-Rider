@@ -46,7 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             "phone": phoneTextEditingController.text.trim(),
           };
           DatabaseReference userRef =
-              FirebaseDatabase.instance.ref().child("users");
+              FirebaseDatabase.instance.ref().child("riders");
           userRef.child(currentUser!.uid).set(userMap);
         }
         await Fluttertoast.showToast(msg: "Successfully Registered");
