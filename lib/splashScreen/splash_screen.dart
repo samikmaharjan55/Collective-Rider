@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return const Scaffold(
       body: Center(
         child: Text(
-          'Collective Rides',
+          'Collective Rider',
           style: TextStyle(
             fontSize: 40,
             fontWeight: FontWeight.bold,

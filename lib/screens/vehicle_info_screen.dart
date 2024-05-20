@@ -1,63 +1,44 @@
 import 'package:collective_rider/global/global.dart';
-import 'package:collective_rider/screens/main_screen.dart';
-import 'package:collective_rider/screens/vehicle_info_screen.dart';
-import 'package:email_validator/email_validator.dart';
+import 'package:collective_rider/splashScreen/splash_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class VehicleInfoScreen extends StatefulWidget {
+  const VehicleInfoScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<VehicleInfoScreen> createState() => _VehicleInfoScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final nameTextEditingController = TextEditingController();
-  final emailTextEditingController = TextEditingController();
-  final phoneTextEditingController = TextEditingController();
-  final addressTextEditingController = TextEditingController();
-  final passwordTextEditingController = TextEditingController();
-  final confirmPasswordTextEditingController = TextEditingController();
+class _VehicleInfoScreenState extends State<VehicleInfoScreen> {
+  final vehicleModelTextEditingController = TextEditingController();
+  final vehicleNumberTextEditingController = TextEditingController();
+  final vehicleColorTextEditingController = TextEditingController();
 
-  bool _passwordVisible = false;
+  List<String> vehicleTypes = ["Car", "Bike"];
+  String? selectedVehicleType;
 
-  // Declare a GlobalKey
   final _formKey = GlobalKey<FormState>();
 
-  void _submit() async {
-    // validate all the form fields
+  _submit() {
     if (_formKey.currentState!.validate()) {
-      await firebaseAuth
-          .createUserWithEmailAndPassword(
-        email: emailTextEditingController.text.trim(),
-        password: passwordTextEditingController.text.trim(),
-      )
-          .then((auth) async {
-        currentUser = auth.user;
-        if (currentUser != null) {
-          Map userMap = {
-            "id": currentUser!.uid,
-            "name": nameTextEditingController.text.trim(),
-            "email": emailTextEditingController.text.trim(),
-            "address": addressTextEditingController.text.trim(),
-            "phone": phoneTextEditingController.text.trim(),
-          };
-          DatabaseReference userRef =
-              FirebaseDatabase.instance.ref().child("riders");
-          userRef.child(currentUser!.uid).set(userMap);
-        }
-        await Fluttertoast.showToast(msg: "Successfully Registered");
-        Navigator.push(context,
-            MaterialPageRoute(builder: (c) => const VehicleInfoScreen()));
-      }).catchError((errorMessage) {
-        Fluttertoast.showToast(msg: "Error Occurred: \n $errorMessage");
-      });
-    } else {
-      Fluttertoast.showToast(msg: "Not all fields are valid");
+      Map riderVehicleInfoMap = {
+        "vehicle_model": vehicleModelTextEditingController.text.trim(),
+        "vehicle_number": vehicleNumberTextEditingController.text.trim(),
+        "vehicle_color": vehicleColorTextEditingController.text.trim(),
+      };
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.ref().child("riders");
+      userRef
+          .child(currentUser!.uid)
+          .child("vehicle_details")
+          .set(riderVehicleInfoMap);
+      Fluttertoast.showToast(
+          msg: "Vehicle details has been saved. Congratulations");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (c) => const SplashScreen()));
     }
   }
 
@@ -71,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
       child: Scaffold(
         body: ListView(
-          padding: const EdgeInsets.all(0),
+          padding: EdgeInsets.all(0),
           children: [
             Column(
               children: [
@@ -80,11 +61,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ? 'assets/images/city-dark.jpg'
                       : 'assets/images/city.png',
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 20,
                 ),
                 Text(
-                  'Register',
+                  "Add Vehicle Details",
                   style: TextStyle(
                     color: darkTheme ? Colors.amber.shade400 : Colors.blue,
                     fontSize: 25,
@@ -107,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 LengthLimitingTextInputFormatter(50),
                               ],
                               decoration: InputDecoration(
-                                hintText: "Name",
+                                hintText: "Vehicle Model",
                                 hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
@@ -144,150 +125,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 return null;
                               },
                               onChanged: (text) => setState(() {
-                                nameTextEditingController.text = text;
+                                vehicleModelTextEditingController.text = text;
                               }),
                             ),
                             const SizedBox(
                               height: 20,
                             ),
                             TextFormField(
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(100),
-                              ],
-                              decoration: InputDecoration(
-                                hintText: "Email",
-                                hintStyle: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                                filled: true,
-                                fillColor: darkTheme
-                                    ? Colors.black45
-                                    : Colors.grey.shade200,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: const BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.none,
-                                  ),
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.email,
-                                  color: darkTheme
-                                      ? Colors.amber.shade400
-                                      : Colors.grey,
-                                ),
-                              ),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              validator: (text) {
-                                if (text == null || text.isEmpty) {
-                                  return "Email cannot be empty";
-                                }
-                                if (EmailValidator.validate(text) == true) {
-                                  return null;
-                                }
-                                if (text.length < 2) {
-                                  return "Please enter a valid email";
-                                }
-                                if (text.length > 99) {
-                                  return "Email cannot be more than 100";
-                                }
-                                return null;
-                              },
-                              onChanged: (text) => setState(() {
-                                emailTextEditingController.text = text;
-                              }),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            IntlPhoneField(
-                              showCountryFlag: false,
-                              dropdownIcon: Icon(
-                                Icons.arrow_drop_down,
-                                color: darkTheme
-                                    ? Colors.amber.shade400
-                                    : Colors.grey,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: "Phone Number",
-                                hintStyle: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                                filled: true,
-                                fillColor: darkTheme
-                                    ? Colors.black45
-                                    : Colors.grey.shade200,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: const BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.none,
-                                  ),
-                                ),
-                              ),
-                              initialCountryCode: 'NP',
-                              onChanged: (text) => setState(() {
-                                phoneTextEditingController.text =
-                                    text.completeNumber;
-                              }),
-                            ),
-                            TextFormField(
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(100),
-                              ],
-                              decoration: InputDecoration(
-                                hintText: "Address",
-                                hintStyle: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                                filled: true,
-                                fillColor: darkTheme
-                                    ? Colors.black45
-                                    : Colors.grey.shade200,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: const BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.none,
-                                  ),
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.location_pin,
-                                  color: darkTheme
-                                      ? Colors.amber.shade400
-                                      : Colors.grey,
-                                ),
-                              ),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              validator: (text) {
-                                if (text == null || text.isEmpty) {
-                                  return "Address cannot be empty";
-                                }
-
-                                if (text.length < 2) {
-                                  return "Please enter a valid address";
-                                }
-                                if (text.length > 99) {
-                                  return "Address cannot be more than 100";
-                                }
-                                return null;
-                              },
-                              onChanged: (text) => setState(() {
-                                addressTextEditingController.text = text;
-                              }),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            TextFormField(
-                              obscureText: !_passwordVisible,
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(50),
                               ],
                               decoration: InputDecoration(
-                                hintText: "Password",
+                                hintText: "Vehicle Number",
                                 hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
@@ -303,56 +152,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 prefixIcon: Icon(
-                                  Icons.password,
+                                  Icons.person,
                                   color: darkTheme
                                       ? Colors.amber.shade400
                                       : Colors.grey,
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _passwordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: darkTheme
-                                        ? Colors.amber.shade400
-                                        : Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    // update the state i.e toggle the state of passwordVisible variable
-                                    setState(() {
-                                      _passwordVisible = !_passwordVisible;
-                                    });
-                                  },
                                 ),
                               ),
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               validator: (text) {
                                 if (text == null || text.isEmpty) {
-                                  return "Password cannot be empty";
+                                  return "Number cannot be empty";
                                 }
-                                if (text.length < 6) {
-                                  return "Please enter a valid password";
+                                if (text.length < 2) {
+                                  return "Please enter a valid number";
                                 }
                                 if (text.length > 49) {
-                                  return "Password cannot be more than 50";
+                                  return "Number cannot be more than 50";
                                 }
                                 return null;
                               },
                               onChanged: (text) => setState(() {
-                                passwordTextEditingController.text = text;
+                                vehicleNumberTextEditingController.text = text;
                               }),
                             ),
                             const SizedBox(
                               height: 20,
                             ),
                             TextFormField(
-                              obscureText: !_passwordVisible,
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(50),
                               ],
                               decoration: InputDecoration(
-                                hintText: "Confirm Password",
+                                hintText: "Vehicle Color",
                                 hintStyle: const TextStyle(
                                   color: Colors.grey,
                                 ),
@@ -368,52 +200,72 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 prefixIcon: Icon(
-                                  Icons.password,
+                                  Icons.person,
                                   color: darkTheme
                                       ? Colors.amber.shade400
                                       : Colors.grey,
-                                ),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _passwordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: darkTheme
-                                        ? Colors.amber.shade400
-                                        : Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    // update the state i.e toggle the state of passwordVisible variable
-                                    setState(() {
-                                      _passwordVisible = !_passwordVisible;
-                                    });
-                                  },
                                 ),
                               ),
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               validator: (text) {
                                 if (text == null || text.isEmpty) {
-                                  return "Confirm Password cannot be empty";
+                                  return "Color cannot be empty";
                                 }
-                                if (text !=
-                                    passwordTextEditingController.text) {
-                                  return "Passwords do not match.";
-                                }
-                                if (text.length < 6) {
-                                  return "Please enter a valid password";
+                                if (text.length < 2) {
+                                  return "Please enter a valid color";
                                 }
                                 if (text.length > 49) {
-                                  return "Password cannot be more than 50";
+                                  return "Color cannot be more than 50";
                                 }
                                 return null;
                               },
                               onChanged: (text) => setState(() {
-                                confirmPasswordTextEditingController.text =
-                                    text;
+                                vehicleColorTextEditingController.text = text;
                               }),
                             ),
                             const SizedBox(
+                              height: 20,
+                            ),
+                            DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                hintText: "Please choose vehicle type",
+                                prefixIcon: Icon(
+                                  Icons.car_crash,
+                                  color: darkTheme
+                                      ? Colors.amber.shade400
+                                      : Colors.grey,
+                                ),
+                                filled: true,
+                                fillColor: darkTheme
+                                    ? Colors.black45
+                                    : Colors.grey.shade200,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(40),
+                                  borderSide: BorderSide(
+                                    width: 0,
+                                    style: BorderStyle.none,
+                                  ),
+                                ),
+                              ),
+                              items: vehicleTypes.map((vehicle) {
+                                return DropdownMenuItem(
+                                  child: Text(
+                                    vehicle,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  value: vehicle,
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedVehicleType = newValue.toString();
+                                });
+                              },
+                            ),
+                            SizedBox(
                               height: 20,
                             ),
                             ElevatedButton(
@@ -433,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 _submit();
                               },
                               child: const Text(
-                                'Register',
+                                'Confirm',
                                 style: TextStyle(
                                   fontSize: 20,
                                 ),

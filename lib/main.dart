@@ -1,4 +1,5 @@
 import 'package:collective_rider/infoHandler/app_info.dart';
+import 'package:collective_rider/screens/vehicle_info_screen.dart';
 import 'package:collective_rider/splashScreen/splash_screen.dart';
 import 'package:collective_rider/themeProvider/theme_provider.dart';
 import 'package:flutter/material.dart';
