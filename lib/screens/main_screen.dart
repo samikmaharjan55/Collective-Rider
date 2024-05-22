@@ -1,5 +1,3 @@
-import 'package:collective_rider/global/global.dart';
-import 'package:collective_rider/splashScreen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -9,19 +7,66 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin {
+  TabController? tabController;
+  int selectedIndex = 0;
+
+  onItemClicked(int index) {
+    setState(() {
+      selectedIndex = index;
+      tabController!.index = selectedIndex;
+    });
+  }
+
+  @override
+  void initState() {
+    tabController = TabController(length: 4, vsync: this);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool darkTheme =
+        MediaQuery.of(context).platformBrightness == Brightness.dark;
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            firebaseAuth.signOut();
-            Navigator.push(
-                context, MaterialPageRoute(builder: (c) => SplashScreen()));
-          },
-          child: Text("Logout"),
-        ),
+      body: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: tabController,
+        children: const [
+          // HomeTabScreen(),
+          // EarningsTabScreen,
+          // RatingsTabScreen(),
+          // ProfileTabScreen(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.credit_card),
+            label: "Earnings",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star),
+            label: "Ratings",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Account",
+          ),
+        ],
+        unselectedItemColor: darkTheme ? Colors.black54 : Colors.white54,
+        selectedItemColor: darkTheme ? Colors.black : Colors.white,
+        backgroundColor: darkTheme ? Colors.amber.shade400 : Colors.blue,
+        type: BottomNavigationBarType.fixed,
+        selectedLabelStyle: TextStyle(fontSize: 14),
+        showUnselectedLabels: true,
+        currentIndex: selectedIndex,
+        onTap: onItemClicked,
       ),
     );
   }

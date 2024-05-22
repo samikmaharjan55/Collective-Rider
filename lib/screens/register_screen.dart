@@ -1,5 +1,4 @@
 import 'package:collective_rider/global/global.dart';
-import 'package:collective_rider/screens/main_screen.dart';
 import 'package:collective_rider/screens/vehicle_info_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_database/firebase_database.dart';

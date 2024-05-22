@@ -52,7 +52,7 @@ class _VehicleInfoScreenState extends State<VehicleInfoScreen> {
       },
       child: Scaffold(
         body: ListView(
-          padding: EdgeInsets.all(0),
+          padding: const EdgeInsets.all(0),
           children: [
             Column(
               children: [
@@ -61,7 +61,7 @@ class _VehicleInfoScreenState extends State<VehicleInfoScreen> {
                       ? 'assets/images/city-dark.jpg'
                       : 'assets/images/city.png',
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Text(
@@ -242,7 +242,7 @@ class _VehicleInfoScreenState extends State<VehicleInfoScreen> {
                                     : Colors.grey.shade200,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     width: 0,
                                     style: BorderStyle.none,
                                   ),
@@ -252,7 +252,7 @@ class _VehicleInfoScreenState extends State<VehicleInfoScreen> {
                                 return DropdownMenuItem(
                                   child: Text(
                                     vehicle,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.grey,
                                     ),
                                   ),
@@ -265,7 +265,7 @@ class _VehicleInfoScreenState extends State<VehicleInfoScreen> {
                                 });
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             ElevatedButton(
