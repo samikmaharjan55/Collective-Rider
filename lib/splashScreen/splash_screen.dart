@@ -17,14 +17,18 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(
         const Duration(
           seconds: 3,
-        ), () async {
-      if (await firebaseAuth.currentUser != null) {
+        ), () {
+      if (firebaseAuth.currentUser != null) {
         firebaseAuth.currentUser != null
             ? AssistantMethods.readCurrentOnlineUserInfo()
             : null;
+        if (!mounted) return;
+
         Navigator.push(
             context, MaterialPageRoute(builder: (c) => const MainScreen()));
       } else {
+        if (!mounted) return;
+
         Navigator.push(
             context, MaterialPageRoute(builder: (c) => const LoginScreen()));
       }

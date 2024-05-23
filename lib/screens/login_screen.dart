@@ -41,12 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
           if (snap.value != null) {
             currentUser = auth.user;
             await Fluttertoast.showToast(msg: "Successfully Logged In");
+            if (!mounted) return;
             Navigator.push(
                 context, MaterialPageRoute(builder: (c) => const MainScreen()));
           } else {
             await Fluttertoast.showToast(
                 msg: "No record exist with this email");
             firebaseAuth.signOut();
+            if (!mounted) return;
             Navigator.push(context,
                 MaterialPageRoute(builder: (c) => const SplashScreen()));
           }

@@ -64,7 +64,7 @@ class _MainScreenState extends State<MainScreen>
         selectedItemColor: darkTheme ? Colors.black : Colors.white,
         backgroundColor: darkTheme ? Colors.amber.shade400 : Colors.blue,
         type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: TextStyle(fontSize: 14),
+        selectedLabelStyle: const TextStyle(fontSize: 14),
         showUnselectedLabels: true,
         currentIndex: selectedIndex,
         onTap: onItemClicked,

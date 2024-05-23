@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 
 import 'package:collective_rider/assistant/assistant_methods.dart';
@@ -54,10 +56,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
     newGoogleMapController!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    if (!mounted) return;
+
     String humanReadableAddress =
         await AssistantMethods.searchAddressForGeographicCoordinates(
             riderCurrentPosition!, context);
-    print("This is our address =" + humanReadableAddress);
+    //print("This is our address =" + humanReadableAddress);
   }
 
   readCurrentRiderInformation() async {
@@ -102,7 +106,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
       children: [
         GoogleMap(
           initialCameraPosition: _kGooglePlex,
-          padding: EdgeInsets.only(top: 40),
+          padding: const EdgeInsets.only(top: 40),
           mapType: MapType.normal,
           myLocationEnabled: true,
           zoomGesturesEnabled: true,
@@ -157,7 +161,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: buttonColor,
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 10,
                   ),
                   shape: RoundedRectangleBorder(
@@ -167,13 +171,13 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                 child: statusText != "Now Online"
                     ? Text(
                         statusText,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       )
-                    : Icon(
+                    : const Icon(
                         Icons.phonelink_ring,
                         color: Colors.white,
                         size: 26,
@@ -232,7 +236,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     ref.onDisconnect();
     ref.remove();
     ref = null;
-    Future.delayed(Duration(milliseconds: 2000), () {
+    Future.delayed(const Duration(milliseconds: 2000), () {
       SystemChannels.platform.invokeMethod("SystemNavigator.pop");
     });
   }

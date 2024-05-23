@@ -250,13 +250,13 @@ class _VehicleInfoScreenState extends State<VehicleInfoScreen> {
                               ),
                               items: vehicleTypes.map((vehicle) {
                                 return DropdownMenuItem(
+                                  value: vehicle,
                                   child: Text(
                                     vehicle,
                                     style: const TextStyle(
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  value: vehicle,
                                 );
                               }).toList(),
                               onChanged: (newValue) {

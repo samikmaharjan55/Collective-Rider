@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:collective_rider/models/direction_details_info.dart';
 import 'package:collective_rider/models/rider_data.dart';
 import 'package:collective_rider/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';

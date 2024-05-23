@@ -50,6 +50,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           userRef.child(currentUser!.uid).set(userMap);
         }
         await Fluttertoast.showToast(msg: "Successfully Registered");
+        if (!mounted) return;
+
         Navigator.push(context,
             MaterialPageRoute(builder: (c) => const VehicleInfoScreen()));
       }).catchError((errorMessage) {
