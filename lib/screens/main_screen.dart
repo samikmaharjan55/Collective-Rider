@@ -1,3 +1,4 @@
+import 'package:collective_rider/tabScreens/home_tab.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -34,7 +35,7 @@ class _MainScreenState extends State<MainScreen>
         physics: const NeverScrollableScrollPhysics(),
         controller: tabController,
         children: const [
-          // HomeTabScreen(),
+          HomeTabScreen(),
           // EarningsTabScreen,
           // RatingsTabScreen(),
           // ProfileTabScreen(),
