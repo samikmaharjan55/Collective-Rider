@@ -7,6 +7,7 @@ class RiderData {
   String? vehicleColor;
   String? vehicleModel;
   String? vehicleNumber;
+  String? vehicleType;
 
   RiderData({
     this.id,
@@ -17,5 +18,6 @@ class RiderData {
     this.vehicleColor,
     this.vehicleModel,
     this.vehicleNumber,
+    this.vehicleType,
   });
 }
