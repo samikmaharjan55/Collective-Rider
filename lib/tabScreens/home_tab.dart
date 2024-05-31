@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:collective_rider/assistant/assistant_methods.dart';
 import 'package:collective_rider/global/global.dart';
+import 'package:collective_rider/pushNotification/push_notification_system.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -98,6 +99,10 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     super.initState();
     checkIfLocationPermissionAllowed();
     readCurrentRiderInformation();
+
+    PushNotificationSystem pushNotificationSystem = PushNotificationSystem();
+    pushNotificationSystem.initializeCloudMessaging(context);
+    pushNotificationSystem.generateAndGetToken();
   }
 
   @override

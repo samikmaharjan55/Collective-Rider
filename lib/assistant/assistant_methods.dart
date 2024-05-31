@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collective_rider/assistant/request_assistant.dart';
 import 'package:collective_rider/global/global.dart';
 import 'package:collective_rider/global/map_key.dart';
@@ -6,6 +8,7 @@ import 'package:collective_rider/models/direction_details_info.dart';
 import 'package:collective_rider/models/directions.dart';
 import 'package:collective_rider/models/user_model.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -65,5 +68,10 @@ class AssistantMethods {
         responseDirectionApi["routes"][0]["legs"][0]["duration"]["value"];
 
     return directionDetailsInfo;
+  }
+
+  static pauseLiveLocationUpdates() {
+    streamSubscriptionPosition!.pause();
+    Geofire.removeLocation(firebaseAuth.currentUser!.uid);
   }
 }

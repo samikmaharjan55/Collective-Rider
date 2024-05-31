@@ -1,7 +1,7 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:collective_rider/global/global.dart';
 import 'package:collective_rider/models/user_ride_request_information.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:collective_rider/pushNotification/notification_dialog_box.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +93,9 @@ class PushNotificationSystem {
 
             showDialog(
                 context: context,
-                builder: (BuildContext context) => NotificationDialogBox());
+                builder: (BuildContext context) => NotificationDialogBox(
+                      userRideRequestDetails: userRideRequestDetails,
+                    ));
           } else {
             Fluttertoast.showToast(msg: "This Ride Request Id do not exist.");
           }
@@ -103,5 +105,20 @@ class PushNotificationSystem {
         Navigator.pop(context);
       }
     });
+  }
+
+  Future generateAndGetToken() async {
+    String? registrationToken = await messaging.getToken();
+    print("FCM registration Token: $registrationToken");
+
+    FirebaseDatabase.instance
+        .ref()
+        .child("riders")
+        .child(firebaseAuth.currentUser!.uid)
+        .child("token")
+        .set(registrationToken);
+
+    messaging.subscribeToTopic("allRiders");
+    messaging.subscribeToTopic("allUsers");
   }
 }
