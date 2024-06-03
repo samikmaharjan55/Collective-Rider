@@ -4,6 +4,7 @@ class RiderData {
   String? phone;
   String? email;
   String? address;
+  String? ratings;
   String? vehicleColor;
   String? vehicleModel;
   String? vehicleNumber;
@@ -15,6 +16,7 @@ class RiderData {
     this.phone,
     this.email,
     this.address,
+    this.ratings,
     this.vehicleColor,
     this.vehicleModel,
     this.vehicleNumber,
