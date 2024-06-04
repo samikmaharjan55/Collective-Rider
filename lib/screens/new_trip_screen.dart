@@ -30,6 +30,8 @@ class _NewTripScreenState extends State<NewTripScreen> {
     zoom: 14.4746,
   );
 
+  String? buttonTitle = "Arrived";
+
   Set<Marker> setOfMarkers = Set<Marker>();
   Set<Circle> setOfCircles = Set<Circle>();
   Set<Polyline> setOfPolylines = Set<Polyline>();
@@ -161,12 +163,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     saveAssignedRiderDetailsToUserRideRequest();
   }
 
   getRidersLocationUpdatesAtRealTime() {
+    LatLng oldLatLng = const LatLng(0, 0);
+
     streamSubscriptionRiderLivePosition =
         Geolocator.getPositionStream().listen((Position position) {
       riderCurrentPosition = position;
@@ -175,7 +178,70 @@ class _NewTripScreenState extends State<NewTripScreen> {
         onlineRiderCurrentPosition!.latitude,
         onlineRiderCurrentPosition!.longitude,
       );
+      Marker animatingMarker = Marker(
+        markerId: const MarkerId("AnimatedMarker"),
+        position: latLngLiveRiderPosition,
+        icon: iconAnimatedMarker!,
+        infoWindow: const InfoWindow(title: "This is your position"),
+      );
+      setState(() {
+        CameraPosition cameraPosition = CameraPosition(
+          target: latLngLiveRiderPosition,
+          zoom: 18,
+        );
+        newTripGoogleMapController!
+            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+        setOfMarkers.removeWhere(
+            (element) => element.markerId.value == "AnimatedMarker");
+        setOfMarkers.add(animatingMarker);
+      });
+
+      oldLatLng = latLngLiveRiderPosition;
+      updateDurationTimeAtRealTime();
+
+      // updating rider location at real time in database
+      Map riderLatLngDataMap = {
+        "latitude": onlineRiderCurrentPosition!.latitude.toString(),
+        "longitude": onlineRiderCurrentPosition!.longitude.toString(),
+      };
+      FirebaseDatabase.instance
+          .ref()
+          .child("All Ride Requests")
+          .child(widget.userRideRequestDetails!.rideRequestId!)
+          .child("riderLocation")
+          .set(riderLatLngDataMap);
     });
+  }
+
+  updateDurationTimeAtRealTime() async {
+    if (isRequestDirectionDetails == false) {
+      isRequestDirectionDetails = true;
+      if (onlineRiderCurrentPosition == null) {
+        return;
+      }
+
+      var originLatLng = LatLng(onlineRiderCurrentPosition!.latitude,
+          onlineRiderCurrentPosition!.longitude);
+
+      var destinationLatLng;
+      if (rideRequestStatus == "accepted") {
+        destinationLatLng =
+            widget.userRideRequestDetails!.originLatLng; // user pickup location
+      } else {
+        destinationLatLng = widget.userRideRequestDetails!.destinationLatLng;
+      }
+
+      var directionInformation =
+          await AssistantMethods.obtainOriginToDestinationDirectionDetails(
+              originLatLng, destinationLatLng);
+      if (directionInformation != null) {
+        setState(() {
+          durationFromOriginToDestination = directionInformation.duration_text!;
+        });
+      }
+      isRequestDirectionDetails = false;
+    }
   }
 
   createRiderIconMarker() {
@@ -218,7 +284,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
           msg:
               "This ride is already accepted by another rider. \n Reloading the App");
       Navigator.push(
-          context, MaterialPageRoute(builder: (c) => SplashScreen()));
+          context, MaterialPageRoute(builder: (c) => const SplashScreen()));
     }
   }
 
@@ -267,6 +333,157 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   riderCurrentLatLng, userPickUpLatLng!, darkTheme);
               getRidersLocationUpdatesAtRealTime();
             },
+          ),
+
+          // UI
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: darkTheme ? Colors.black : Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.white,
+                      blurRadius: 18,
+                      spreadRadius: 0.5,
+                      offset: Offset(0.6, 0.6),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      // duration
+                      Text(
+                        durationFromOriginToDestination,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color:
+                              darkTheme ? Colors.amber.shade400 : Colors.black,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Divider(
+                        thickness: 1,
+                        color: darkTheme ? Colors.amber.shade400 : Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            widget.userRideRequestDetails!.userName!,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: darkTheme
+                                  ? Colors.amber.shade400
+                                  : Colors.black,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.phone,
+                              color: darkTheme
+                                  ? Colors.amber.shade400
+                                  : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Image.asset(
+                            "images/origin.png",
+                            width: 30,
+                            height: 30,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                widget.userRideRequestDetails!.originAddress!,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: darkTheme
+                                      ? Colors.amberAccent
+                                      : Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Image.asset(
+                            "images/destination.png",
+                            width: 30,
+                            height: 30,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                widget.userRideRequestDetails!
+                                    .destinationAddress!,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: darkTheme
+                                      ? Colors.amberAccent
+                                      : Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Divider(
+                        thickness: 1,
+                        color: darkTheme ? Colors.amber.shade400 : Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.directions_bike,
+                          color: darkTheme ? Colors.black : Colors.white,
+                          size: 25,
+                        ),
+                        label: Text(buttonTitle!),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
