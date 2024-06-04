@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:collective_rider/assistant/assistant_methods.dart';
 import 'package:collective_rider/global/global.dart';
-import 'package:collective_rider/pushNotification/push_notification_system.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -86,6 +85,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
             (snap.snapshot.value as Map)["vehicle_details"]["vehicle_model"];
         onlineRiderData.vehicleNumber =
             (snap.snapshot.value as Map)["vehicle_details"]["vehicle_number"];
+        onlineRiderData.vehicleType =
+            (snap.snapshot.value as Map)["vehicle_details"]["type"];
 
         riderVehicleType =
             (snap.snapshot.value as Map)["vehicle_details"]["type"];
@@ -95,14 +96,9 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     checkIfLocationPermissionAllowed();
     readCurrentRiderInformation();
-
-    PushNotificationSystem pushNotificationSystem = PushNotificationSystem();
-    pushNotificationSystem.initializeCloudMessaging(context);
-    pushNotificationSystem.generateAndGetToken();
   }
 
   @override

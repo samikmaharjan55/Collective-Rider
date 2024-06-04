@@ -93,9 +93,7 @@ class PushNotificationSystem {
 
             showDialog(
                 context: context,
-                builder: (BuildContext context) => NotificationDialogBox(
-                      userRideRequestDetails: userRideRequestDetails,
-                    ));
+                builder: (BuildContext context) => NotificationDialogBox());
           } else {
             Fluttertoast.showToast(msg: "This Ride Request Id do not exist.");
           }
@@ -105,20 +103,5 @@ class PushNotificationSystem {
         Navigator.pop(context);
       }
     });
-  }
-
-  Future generateAndGetToken() async {
-    String? registrationToken = await messaging.getToken();
-    print("FCM registration Token: $registrationToken");
-
-    FirebaseDatabase.instance
-        .ref()
-        .child("riders")
-        .child(firebaseAuth.currentUser!.uid)
-        .child("token")
-        .set(registrationToken);
-
-    messaging.subscribeToTopic("allRiders");
-    messaging.subscribeToTopic("allUsers");
   }
 }
