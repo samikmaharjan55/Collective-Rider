@@ -4,7 +4,9 @@ import 'package:collective_rider/assistant/assistant_methods.dart';
 import 'package:collective_rider/global/global.dart';
 import 'package:collective_rider/models/user_ride_request_information.dart';
 import 'package:collective_rider/splashScreen/splash_screen.dart';
+import 'package:collective_rider/widgets/fare_amount_collection_dialog.dart';
 import 'package:collective_rider/widgets/progress_dialog.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -299,6 +301,85 @@ class _NewTripScreenState extends State<NewTripScreen> {
     tripsHistoryRef
         .child(widget.userRideRequestDetails!.rideRequestId!)
         .set(true);
+  }
+
+  endTripNow() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => ProgressDialog(
+        message: "Please wait...",
+      ),
+    );
+    // get the tripDirectionDetails = distance travelled
+    var currentRiderPositionLatLng = LatLng(
+        onlineRiderCurrentPosition!.latitude,
+        onlineRiderCurrentPosition!.longitude);
+    var tripDirectionDetails =
+        await AssistantMethods.obtainOriginToDestinationDirectionDetails(
+            currentRiderPositionLatLng,
+            widget.userRideRequestDetails!.originLatLng!);
+
+    // fare amount
+    double totalFareAmount =
+        AssistantMethods.calculateFareAmountFromOriginToDestination(
+            tripDirectionDetails);
+
+    FirebaseDatabase.instance
+        .ref()
+        .child("All Ride Requests")
+        .child(widget.userRideRequestDetails!.rideRequestId!)
+        .child("fareAmount")
+        .set(totalFareAmount.toString());
+    FirebaseDatabase.instance
+        .ref()
+        .child("All Ride Requests")
+        .child(widget.userRideRequestDetails!.rideRequestId!)
+        .child("status")
+        .set("ended");
+
+    Navigator.pop(context);
+
+    // display fare amount in dialog box
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => FareAmountCollectionDialog(
+        totalFareAmount: totalFareAmount,
+      ),
+    );
+
+    // save fare amount to rider total earnings
+    saveFareAmountToRiderEarnings(totalFareAmount);
+  }
+
+  saveFareAmountToRiderEarnings(totalFareAmount) {
+    FirebaseDatabase.instance
+        .ref()
+        .child("riders")
+        .child(firebaseAuth.currentUser!.uid)
+        .child("earnings")
+        .once()
+        .then((snap) {
+      if (snap.snapshot.value != null) {
+        double oldEarnings = double.parse(snap.snapshot.value.toString());
+        double riderTotalEarnings = totalFareAmount + oldEarnings;
+
+        FirebaseDatabase.instance
+            .ref()
+            .child("riders")
+            .child(firebaseAuth.currentUser!.uid)
+            .child("earnings")
+            .set(riderTotalEarnings.toString());
+      } else {
+        FirebaseDatabase.instance
+            .ref()
+            .child("riders")
+            .child(firebaseAuth.currentUser!.uid)
+            .child("earnings")
+            .set(totalFareAmount.toString());
+      }
+    });
   }
 
   @override
