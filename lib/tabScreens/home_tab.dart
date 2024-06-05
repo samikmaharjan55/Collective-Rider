@@ -79,6 +79,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
         onlineRiderData.phone = (snap.snapshot.value as Map)["phone"];
         onlineRiderData.email = (snap.snapshot.value as Map)["email"];
         onlineRiderData.address = (snap.snapshot.value as Map)["address"];
+        onlineRiderData.ratings = (snap.snapshot.value as Map)["ratings"];
         onlineRiderData.vehicleColor =
             (snap.snapshot.value as Map)["vehicle_details"]["vehicle_color"];
         onlineRiderData.vehicleModel =

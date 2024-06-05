@@ -31,6 +31,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
   );
 
   String? buttonTitle = "Arrived";
+  Color? buttonColor = Colors.green;
 
   Set<Marker> setOfMarkers = Set<Marker>();
   Set<Circle> setOfCircles = Set<Circle>();
@@ -471,13 +472,72 @@ class _NewTripScreenState extends State<NewTripScreen> {
                         height: 10,
                       ),
                       ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: () async {
+                          // Rider has arrived at user pickup location - Arrived Button
+                          if (rideRequestStatus == "accepted") {
+                            rideRequestStatus = "arrived";
+                            FirebaseDatabase.instance
+                                .ref()
+                                .child("All Ride Request")
+                                .child(widget
+                                    .userRideRequestDetails!.rideRequestId!)
+                                .child("status")
+                                .set(rideRequestStatus);
+
+                            setState(() {
+                              buttonTitle = "Let's Go";
+                              buttonColor = Colors.lightGreen;
+                            });
+
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) => ProgressDialog(
+                                message: "Loading...",
+                              ),
+                            );
+                            await drawPolylineFromOriginToDestination(
+                              widget.userRideRequestDetails!.originLatLng!,
+                              widget.userRideRequestDetails!.destinationLatLng!,
+                              darkTheme,
+                            );
+                            Navigator.pop(context);
+                          }
+                          // User has been picked from the user's current location = Let's Go Button
+                          else if (rideRequestStatus == "arrived") {
+                            rideRequestStatus = "ontrip";
+                            FirebaseDatabase.instance
+                                .ref()
+                                .child("All Ride Request")
+                                .child(widget
+                                    .userRideRequestDetails!.rideRequestId!)
+                                .child("status")
+                                .set(rideRequestStatus);
+
+                            setState(() {
+                              buttonTitle = "End Trip";
+                              buttonColor = Colors.redAccent;
+                            });
+                          }
+
+                          // User and Rider has reached the drop-off location - End Trip Button
+                          else if (rideRequestStatus == "ontrip") {
+                            endTripNow();
+                          }
+                        },
                         icon: Icon(
                           Icons.directions_bike,
                           color: darkTheme ? Colors.black : Colors.white,
                           size: 25,
                         ),
-                        label: Text(buttonTitle!),
+                        label: Text(
+                          buttonTitle!,
+                          style: TextStyle(
+                            color: darkTheme ? Colors.black : Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       )
                     ],
                   ),
