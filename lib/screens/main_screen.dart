@@ -1,4 +1,7 @@
+import 'package:collective_rider/tabScreens/earnings_tab.dart';
 import 'package:collective_rider/tabScreens/home_tab.dart';
+import 'package:collective_rider/tabScreens/profile_tab.dart';
+import 'package:collective_rider/tabScreens/ratings_tab.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -36,9 +39,9 @@ class _MainScreenState extends State<MainScreen>
         controller: tabController,
         children: const [
           HomeTabScreen(),
-          // EarningsTabScreen,
-          // RatingsTabScreen(),
-          // ProfileTabScreen(),
+          EarningsTabScreen(),
+          RatingsTabScreen(),
+          ProfileTabScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
