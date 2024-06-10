@@ -9,7 +9,6 @@ import 'package:collective_rider/models/directions.dart';
 import 'package:collective_rider/models/trips_history_model.dart';
 import 'package:collective_rider/models/user_model.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -80,7 +79,7 @@ class AssistantMethods {
   static double calculateFareAmountFromOriginToDestination(
       DirectionDetailsInfo directionDetailsInfo) {
     double timeTravelledFareAmountPerMinute =
-        (directionDetailsInfo.duration_value / 60) * 0.1;
+        (directionDetailsInfo.duration_value! / 60) * 0.1;
     double distanceTravelledFareAmountPerKilometer =
         (directionDetailsInfo.duration_value! / 1000) * 0.1;
 

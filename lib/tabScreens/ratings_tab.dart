@@ -68,7 +68,7 @@ class _RatingsTabScreenState extends State<RatingsTabScreen> {
         ),
         backgroundColor: darkTheme ? Colors.grey : Colors.white60,
         child: Container(
-          margin: EdgeInsets.all(4),
+          margin: const EdgeInsets.all(4),
           width: double.infinity,
           decoration: BoxDecoration(
             color: darkTheme ? Colors.black : Colors.white54,
@@ -77,7 +77,7 @@ class _RatingsTabScreenState extends State<RatingsTabScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 22,
               ),
               Text(
@@ -89,7 +89,7 @@ class _RatingsTabScreenState extends State<RatingsTabScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               SmoothStarRating(
@@ -100,7 +100,7 @@ class _RatingsTabScreenState extends State<RatingsTabScreen> {
                 borderColor: darkTheme ? Colors.amber.shade400 : Colors.blue,
                 size: 46,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               Text(
@@ -111,7 +111,7 @@ class _RatingsTabScreenState extends State<RatingsTabScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 18,
               ),
             ],

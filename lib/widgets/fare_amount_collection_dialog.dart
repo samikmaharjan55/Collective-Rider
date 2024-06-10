@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:collective_rider/splashScreen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +22,7 @@ class _FareAmountCollectionDialogState
       ),
       backgroundColor: Colors.transparent,
       child: Container(
-        margin: EdgeInsets.all(6),
+        margin: const EdgeInsets.all(6),
         width: double.infinity,
         decoration: BoxDecoration(
           color: darkTheme ? Colors.black : Colors.blue,
@@ -33,7 +31,7 @@ class _FareAmountCollectionDialogState
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Text(
@@ -52,11 +50,11 @@ class _FareAmountCollectionDialogState
                 fontSize: 50,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(
                 'This is the total trip amount. Please collect it from the user.',
                 textAlign: TextAlign.center,
@@ -65,11 +63,11 @@ class _FareAmountCollectionDialogState
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor:
@@ -77,13 +75,13 @@ class _FareAmountCollectionDialogState
                 ),
                 onPressed: () {
                   Future.delayed(
-                      Duration(
+                      const Duration(
                         milliseconds: 2000,
                       ), () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (c) => SplashScreen(),
+                        builder: (c) => const SplashScreen(),
                       ),
                     );
                   });

@@ -62,6 +62,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
         await AssistantMethods.searchAddressForGeographicCoordinates(
             riderCurrentPosition!, context);
     //print("This is our address =" + humanReadableAddress);
+    AssistantMethods.readRiderRatings(context);
   }
 
   readCurrentRiderInformation() async {
@@ -93,6 +94,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
             (snap.snapshot.value as Map)["vehicle_details"]["type"];
       }
     });
+    AssistantMethods.readRiderEarnings(context);
   }
 
   @override

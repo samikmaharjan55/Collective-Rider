@@ -1,5 +1,6 @@
 import 'package:collective_rider/global/global.dart';
 import 'package:collective_rider/infoHandler/app_info.dart';
+import 'package:collective_rider/screens/trips_history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,14 +55,16 @@ class _EarningsTabScreenState extends State<EarningsTabScreen> {
           // total number of trips
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (c) => TripsHistoryScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (c) => const TripsHistoryScreen()));
             },
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white54,
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Row(
                 children: [
                   Image.asset(
@@ -70,28 +73,26 @@ class _EarningsTabScreenState extends State<EarningsTabScreen> {
                         : "assets/images/car.png",
                     scale: 2,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  Text(
+                  const Text(
                     "Trips Completed",
                     style: TextStyle(
                       color: Colors.black54,
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      child: Text(
-                        Provider.of<AppInfo>(context, listen: false)
-                            .allTripsHistoryInformationList
-                            .length
-                            .toString(),
-                        textAlign: TextAlign.end,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    child: Text(
+                      Provider.of<AppInfo>(context, listen: false)
+                          .allTripsHistoryInformationList
+                          .length
+                          .toString(),
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),

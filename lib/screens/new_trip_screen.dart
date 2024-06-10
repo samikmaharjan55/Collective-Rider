@@ -6,7 +6,6 @@ import 'package:collective_rider/models/user_ride_request_information.dart';
 import 'package:collective_rider/splashScreen/splash_screen.dart';
 import 'package:collective_rider/widgets/fare_amount_collection_dialog.dart';
 import 'package:collective_rider/widgets/progress_dialog.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -499,15 +498,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
                             width: 10,
                           ),
                           Expanded(
-                            child: Container(
-                              child: Text(
-                                widget.userRideRequestDetails!.originAddress!,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: darkTheme
-                                      ? Colors.amberAccent
-                                      : Colors.black,
-                                ),
+                            child: Text(
+                              widget.userRideRequestDetails!.originAddress!,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: darkTheme
+                                    ? Colors.amberAccent
+                                    : Colors.black,
                               ),
                             ),
                           ),
@@ -527,16 +524,14 @@ class _NewTripScreenState extends State<NewTripScreen> {
                             width: 10,
                           ),
                           Expanded(
-                            child: Container(
-                              child: Text(
-                                widget.userRideRequestDetails!
-                                    .destinationAddress!,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: darkTheme
-                                      ? Colors.amberAccent
-                                      : Colors.black,
-                                ),
+                            child: Text(
+                              widget
+                                  .userRideRequestDetails!.destinationAddress!,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: darkTheme
+                                    ? Colors.amberAccent
+                                    : Colors.black,
                               ),
                             ),
                           ),

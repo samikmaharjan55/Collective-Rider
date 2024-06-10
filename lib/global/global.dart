@@ -20,3 +20,5 @@ Position? riderCurrentPosition;
 RiderData onlineRiderData = RiderData();
 
 String? riderVehicleType = "";
+
+String titleStarsRating = '';
