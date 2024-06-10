@@ -1,5 +1,5 @@
 import 'package:collective_rider/infoHandler/app_info.dart';
-import 'package:collective_rider/widgets/history_design_ui';
+import 'package:collective_rider/widgets/history_design_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
